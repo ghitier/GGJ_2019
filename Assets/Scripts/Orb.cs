@@ -4,13 +4,13 @@ using UnityEngine;
 
 public class Orb : MonoBehaviour
 {
-    [SerializeField] float pickupDistance;
-    [SerializeField] GameObject characterRef;
+    // [SerializeField] float pickupDistance;
+    // [SerializeField] GameObject characterRef;
     [SerializeField] AudioClip dropSfx;
     [SerializeField] AudioClip rollSfx;
     // [SerializeField] bool startGrounded;
 
-    private OrbController orbControllerRef;
+    // private OrbController orbControllerRef;
     private bool isGrounded = false;
     private bool isRolling = false;
     private float lastRoll;
@@ -19,12 +19,13 @@ public class Orb : MonoBehaviour
     void Start()
     {
         lastRoll =  Time.time;
-        orbControllerRef = characterRef.GetComponent<OrbController>();
+        // orbControllerRef = characterRef.GetComponent<OrbController>();
     }
 
     // Update is called once per frame
     void Update()
     {
+        /*
         if (Input.GetKeyUp(KeyCode.G))
         {
             if (!orbControllerRef.HasOrb)
@@ -40,8 +41,10 @@ public class Orb : MonoBehaviour
                 RemoveFromCharacter();
             }
         }
+        */
     }
 
+    /*
     private void AddToCharacter()
     {
         // Mabe multiple orbes are in range, so mabe the character might get multiple requests
@@ -59,6 +62,7 @@ public class Orb : MonoBehaviour
         GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
         orbControllerRef.DropOrb();
     }
+    */
 
     private void OnCollisionEnter(Collision collision)
     {
