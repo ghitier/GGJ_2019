@@ -8,11 +8,12 @@ public class Orb : MonoBehaviour
     [SerializeField] GameObject characterRef;
     [SerializeField] AudioClip dropSfx;
     [SerializeField] AudioClip rollSfx;
+    // [SerializeField] bool startGrounded;
 
     private OrbController orbControllerRef;
-    public bool isGrounded = false;
-    public bool isRolling = false;
-    float lastRoll;
+    private bool isGrounded = false;
+    private bool isRolling = false;
+    private float lastRoll;
 
     // Start is called before the first frame update
     void Start()
