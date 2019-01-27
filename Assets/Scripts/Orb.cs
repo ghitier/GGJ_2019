@@ -86,7 +86,6 @@ public class Orb : MonoBehaviour
                 isRolling = true;
                 lastRoll = Time.time;
                 AudioSource sfxAudioSource = GetComponent<AudioSource>();
-                // Debug.Log("Rock N Roll bb <3");
                 sfxAudioSource.PlayOneShot(rollSfx);
             }
         }
