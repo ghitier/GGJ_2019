@@ -13,7 +13,8 @@ public class GameManager : MonoBehaviour
     public Transform FPS_Camera_position;
     public Transform ThirdPerson_Camera_position;
     public GameObject Ball;
-    public Canvas GameUI;
+    public Canvas GameUI; // le menu pause, ni plus ni moins.
+    public Canvas InputField; //Pour l'ajout de nouvelle phrases dans la bouboule
     public GameObject player;
     public float interactDistance;
 
@@ -26,6 +27,10 @@ public class GameManager : MonoBehaviour
     public ThirdPersonUserControl userControl;
     bool gameRun = true;
     public bool hasBall = false;
+
+    // Those are used to store the ball movement (To be able to stop the ball at Pause() and give it back when UnPause() ): 
+    private Vector3 ballVelocity;
+    private Vector3 ballAngularVelocity;
 
     void Awake()
     {
@@ -43,6 +48,7 @@ public class GameManager : MonoBehaviour
         loadBallData();
         switchCamPosition();
         GameUI.enabled = false;
+        InputField.enabled = false;
     }
     
     private void Update()
@@ -153,6 +159,23 @@ public class GameManager : MonoBehaviour
     }
 
     /// <summary>
+    /// Place new string at the end of the file, and hide input field
+    /// </summary>
+    public void SaveBallData(string s)
+    {
+        using (System.IO.StreamWriter file = new System.IO.StreamWriter("Legacy.txt", true))
+        {
+            file.WriteLine(s);
+            InputField.enabled = false;
+        }
+    }
+
+    public void DisplayInputField()
+    {
+        InputField.enabled = true;
+    }
+
+    /// <summary>
     /// Pause the game
     /// </summary>
     private void Pause()
@@ -171,6 +194,12 @@ public class GameManager : MonoBehaviour
         gameRun = false;
         //display ui
         GameUI.enabled = true;
+        // Store ball velocity
+        ballVelocity = Ball.GetComponent<Rigidbody>().velocity;
+        ballAngularVelocity = Ball.GetComponent<Rigidbody>().angularVelocity;
+        //Stop the ball
+        Ball.GetComponent<Rigidbody>().velocity = Vector3.zero;
+        Ball.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
     }
 
     /// <summary>
@@ -197,6 +226,9 @@ public class GameManager : MonoBehaviour
         gameRun = true;
         //hide ui
         GameUI.enabled = false;
+        //give back the velocity the ball had before Pause()
+        Ball.GetComponent<Rigidbody>().velocity = ballVelocity;
+        Ball.GetComponent<Rigidbody>().angularVelocity = ballAngularVelocity;
     }
 
     /// <summary>

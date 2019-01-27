@@ -41,7 +41,7 @@ public class Ball : MonoBehaviour
     {
         if (rotate)
         {
-            transform.Rotate(Vector3.up, rotationSpeed * Time.deltaTime);
+            transform.Rotate(Vector3.up, -rotationSpeed * Time.deltaTime);
         }
     }
 }
