@@ -73,6 +73,7 @@ namespace UnityStandardAssets.Cameras
 			return;
 
             float x, y;
+           
             if (Input.GetJoystickNames()[0] == "Controller (XBOX 360 For Windows)")
             {
                 m_TurnSpeed = 10;

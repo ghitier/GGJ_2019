@@ -13,6 +13,7 @@ public class PNJrunner : MonoBehaviour
     public Transform spotAuDessusDuVide;
 
     public GameObject DissapearingWall;
+    public GameObject DissapearingWall2;
 
     public float range = 10;
     public float transitionFromJumpSpotToSpotAuDessusDuVide;
@@ -124,6 +125,7 @@ public class PNJrunner : MonoBehaviour
         GetComponent<Rigidbody>().isKinematic = false;
         StartCoroutine(Transition(spotAuDessusDuVide));
         GameManager.instance.Ball.SetActive(false);
+        DissapearingWall2.SetActive(false);
     }
     /// <summary>
     /// Lerp the camera to the specified transform
