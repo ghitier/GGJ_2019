@@ -4,15 +4,20 @@ using UnityEngine;
 
 public class Orb : MonoBehaviour
 {
-    public bool isAlone;
     [SerializeField] float pickupDistance;
     [SerializeField] GameObject characterRef;
+    [SerializeField] AudioClip dropSfx;
+    [SerializeField] AudioClip rollSfx;
 
     private OrbController orbControllerRef;
+    public bool isGrounded = false;
+    public bool isRolling = false;
+    float lastRoll;
 
     // Start is called before the first frame update
     void Start()
     {
+        lastRoll =  Time.time;
         orbControllerRef = characterRef.GetComponent<OrbController>();
     }
 
@@ -52,5 +57,42 @@ public class Orb : MonoBehaviour
         transform.parent = null;
         GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
         orbControllerRef.DropOrb();
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Ground"))
+        {
+            isGrounded = true;
+            AudioSource sfxAudioSource = GetComponent<AudioSource>();
+            sfxAudioSource.PlayOneShot(dropSfx);
+        }
+    }
+
+    private void OnCollisionStay(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Ground"))
+        {
+            Rigidbody rb = GetComponent<Rigidbody>();
+            float t = (2 * Mathf.PI) / rb.angularVelocity.magnitude;
+
+            if (isRolling == false || Time.time > lastRoll + t)
+            {
+                isRolling = true;
+                lastRoll = Time.time;
+                AudioSource sfxAudioSource = GetComponent<AudioSource>();
+                // Debug.Log("Rock N Roll bb <3");
+                sfxAudioSource.PlayOneShot(rollSfx);
+            }
+        }
+    }
+
+    private void OnCollisionExit(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Ground"))
+        {
+            isGrounded = false;
+            isRolling = false;
+        }
     }
 }

@@ -9,17 +9,29 @@ public class PNJrunner : MonoBehaviour
     Transform player;
 
     public Transform[] waypoints;
+    public Transform jumpSpot;
+    public Transform spotAuDessusDuVide;
+
     public float range = 10;
+    public float transitionFromJumpSpotToSpotAuDessusDuVide;
 
     public float distanceToPlayer;
     public float distanceToNextWaypoint;
     public float distanceBetweenPLayerAndNextWaypoint;
+    public float distanceToJumpSpot;
+
     public int nextWaypoint = 0;
     public bool invertDirection = false;
+
+    public float speedWhenRunning;
+    public float speedWhengoingTOJumpSpot;
+
+    bool isGonnaDie = false;
 
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
+        agent.speed = speedWhenRunning;
         player = GameObject.FindGameObjectWithTag("Player").transform;
 
         if (waypoints.Length ==0)
@@ -30,26 +42,40 @@ public class PNJrunner : MonoBehaviour
 
     void Update()
     {
-         distanceToPlayer = Vector3.Distance(transform.position, player.position);
-         distanceToNextWaypoint = Vector3.Distance(waypoints[nextWaypoint].position, transform.position);
-         distanceBetweenPLayerAndNextWaypoint = Vector3.Distance(waypoints[nextWaypoint].position, player.transform.position);
+        distanceToPlayer = Vector3.Distance(transform.position, player.position);
+        distanceToNextWaypoint = Vector3.Distance(waypoints[nextWaypoint].position, transform.position);
+        distanceBetweenPLayerAndNextWaypoint = Vector3.Distance(waypoints[nextWaypoint].position, player.transform.position);
+        distanceToJumpSpot = Vector3.Distance(transform.position, jumpSpot.position);
 
+        if (!isGonnaDie)
+        {
+            if (distanceToPlayer < range && GameManager.instance.hasBall)
+            {
+                RUNMOTHERFUCKER();
 
-         if (distanceToPlayer < range && GameManager.instance.hasBall)
-         {
-            RUNMOTHERFUCKER();
-         }
-         else
-         {
-             agent.isStopped = true;
-         }
+                if (distanceToNextWaypoint < 2) // Reached Waypoint
+                {
+                    goToNextWaypoint();
+                }
+            }
+            else
+            {
+                agent.isStopped = true;
 
+                if (distanceToPlayer < 3) // player has catch pnj
+                {
+                    agent.isStopped = false;
+                    agent.speed = speedWhengoingTOJumpSpot;
+                    agent.SetDestination(jumpSpot.position);
+                }
+            }
 
-         if (distanceToNextWaypoint < 2)
-         {
-             goToNextWaypoint();
-         }
-
+            if (distanceToJumpSpot < 2)
+            {
+                Debug.Log("DIIIIIIIIE");
+                DIEMOTHERFUCKER();
+            }
+        }
     }
 
     void RUNMOTHERFUCKER()
@@ -85,5 +111,27 @@ public class PNJrunner : MonoBehaviour
         }
         agent.isStopped = false;
         agent.SetDestination(waypoints[nextWaypoint].position);
+    }
+
+    void DIEMOTHERFUCKER()
+    {
+        agent.enabled = false;
+        isGonnaDie = true;
+        Debug.Log("Should jump to die");
+        StartCoroutine(Transition(spotAuDessusDuVide));
+    }
+    /// <summary>
+    /// Lerp the camera to the specified transform
+    /// </summary>
+    IEnumerator Transition(Transform target)
+    {
+        float t = 0.0f;
+        Vector3 startingPos = transform.position;
+        while (t < 1.0f)
+        {
+            t += Time.deltaTime * (Time.timeScale / transitionFromJumpSpotToSpotAuDessusDuVide);
+            transform.position = Vector3.Lerp(startingPos, target.position, t);
+            yield return 0;
+        }
     }
 }
