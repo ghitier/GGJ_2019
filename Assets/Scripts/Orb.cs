@@ -2,18 +2,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Orbe : MonoBehaviour
+public class Orb : MonoBehaviour
 {
     public bool isAlone;
     [SerializeField] float pickupDistance;
     [SerializeField] GameObject characterRef;
 
-    private float characterColliderRadius;
+    private OrbController orbControllerRef;
 
     // Start is called before the first frame update
     void Start()
     {
-        characterColliderRadius = characterRef.GetComponent<CapsuleCollider>().radius;
+        orbControllerRef = characterRef.GetComponent<OrbController>();
     }
 
     // Update is called once per frame
@@ -21,7 +21,7 @@ public class Orbe : MonoBehaviour
     {
         if (Input.GetKeyUp(KeyCode.G))
         {
-            if (isAlone)
+            if (!orbControllerRef.HasOrb)
             {
                 float distance = (characterRef.transform.position - transform.position).magnitude;
                 if (distance < pickupDistance)
@@ -41,10 +41,9 @@ public class Orbe : MonoBehaviour
         // Mabe multiple orbes are in range, so mabe the character might get multiple requests
 
         GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezePosition;
-        Physics.IgnoreCollision(GetComponent<Collider>(), characterRef.GetComponent<Collider>());
         transform.parent = characterRef.transform;
         transform.localPosition = new Vector3(0f, 1f, 0.5f);
-        isAlone = false;
+        orbControllerRef.PickupOrb(gameObject);
     }
 
     private void RemoveFromCharacter()
@@ -52,7 +51,6 @@ public class Orbe : MonoBehaviour
 
         transform.parent = null;
         GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
-        Physics.IgnoreCollision(GetComponent<Collider>(), characterRef.GetComponent<Collider>(), false);
-        isAlone = true;
+        orbControllerRef.DropOrb();
     }
 }
