@@ -9,9 +9,10 @@ public class Respawn : MonoBehaviour
 
 	private void OnCollisionEnter(Collision collision)
 	{
-		if (collision.collider.tag == "Player")
+		if (collision.collider.tag == "Player" || collision.collider.tag == "Ball")
 		{
 			GameManager.instance.player.transform.position = checkpoint.transform.position;
+			GameManager.instance.SpawnOrbToPlayer();
 			Debug.Log("TEST");
 		}
 	}
