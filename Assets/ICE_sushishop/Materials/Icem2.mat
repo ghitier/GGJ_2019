@@ -24,7 +24,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
-        m_Texture: {fileID: 2800000, guid: ed904cf92daa73944949abb5520bea58, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 2, y: 2}
         m_Offset: {x: 0, y: 0}
     - _DetailAlbedoMap:
@@ -56,7 +56,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _NormalMapII:
-        m_Texture: {fileID: 2800000, guid: fbba011cc6fa1474294f6700f3e9ac41, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
@@ -72,7 +72,7 @@ Material:
         m_Scale: {x: 1.02, y: 1}
         m_Offset: {x: 0, y: 0}
     - _snow:
-        m_Texture: {fileID: 2800000, guid: 50c397b0cfd8e7f4cb233370c8999495, type: 3}
+        m_Texture: {fileID: 2800000, guid: e3ba8bc476e919b4b9308f1d6abe660b, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
@@ -80,22 +80,22 @@ Material:
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
-    - _Freezeeffectnormal: 6.69
+    - _Freezeeffectnormal: 9.24
     - _Freezing: 4.28
-    - _Gloss: 0.335
+    - _Gloss: 0
     - _Gloss2: 0.763
     - _Glossiness: 0.5
     - _Ice_fres: 2.54
-    - _Ice_fresnel: 1.17
+    - _Ice_fresnel: 3
     - _LocalGlobal: 0
-    - _Metallic: 0.415
+    - _Metallic: 0.317
     - _Mode: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02
     - _SrcBlend: 1
     - _SwitchDirec: 1
     - _Transp: 0.128
-    - _Transparency: 0.108
+    - _Transparency: 0.985
     - _UVSec: 0
     - _ZWrite: 1
     - _freeze: 0.46
@@ -106,9 +106,9 @@ Material:
     - _node_5912: 0.6
     - _node_8801: 1.91
     - _node_9046: 1.12
-    - _snow_slider: 0
+    - _snow_slider: 2.89
     m_Colors:
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _Color: {r: 0, g: 0.6603774, b: 0.6248733, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _node_5379: {r: 1, g: 0.6397059, b: 0.6397059, a: 1}
     - _node_6644: {r: 0.5147059, g: 0.7389455, b: 1, a: 1}
