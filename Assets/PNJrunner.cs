@@ -6,11 +6,13 @@ using System.Collections.Generic;
 public class PNJrunner : MonoBehaviour
 {
     NavMeshAgent agent;
-    Transform player;
+    //Transform player;
 
     public Transform[] waypoints;
     public Transform jumpSpot;
     public Transform spotAuDessusDuVide;
+
+    public GameObject DissapearingWall;
 
     public float range = 10;
     public float transitionFromJumpSpotToSpotAuDessusDuVide;
@@ -32,7 +34,7 @@ public class PNJrunner : MonoBehaviour
     {
         agent = GetComponent<NavMeshAgent>();
         agent.speed = speedWhenRunning;
-        player = GameObject.FindGameObjectWithTag("Player").transform;
+        //player = GameManager.instance.player.transform;
 
         if (waypoints.Length ==0)
         {
@@ -42,9 +44,9 @@ public class PNJrunner : MonoBehaviour
 
     void Update()
     {
-        distanceToPlayer = Vector3.Distance(transform.position, player.position);
+        distanceToPlayer = Vector3.Distance(transform.position, GameManager.instance.player.transform.position);
         distanceToNextWaypoint = Vector3.Distance(waypoints[nextWaypoint].position, transform.position);
-        distanceBetweenPLayerAndNextWaypoint = Vector3.Distance(waypoints[nextWaypoint].position, player.transform.position);
+        distanceBetweenPLayerAndNextWaypoint = Vector3.Distance(waypoints[nextWaypoint].position, GameManager.instance.player.transform.position);
         distanceToJumpSpot = Vector3.Distance(transform.position, jumpSpot.position);
 
         if (!isGonnaDie)
@@ -67,6 +69,7 @@ public class PNJrunner : MonoBehaviour
                     agent.isStopped = false;
                     agent.speed = speedWhengoingTOJumpSpot;
                     agent.SetDestination(jumpSpot.position);
+                    DissapearingWall.SetActive(false);
                 }
             }
 
@@ -120,6 +123,7 @@ public class PNJrunner : MonoBehaviour
         Debug.Log("Should jump to die");
         GetComponent<Rigidbody>().isKinematic = false;
         StartCoroutine(Transition(spotAuDessusDuVide));
+        GameManager.instance.Ball.SetActive(false);
     }
     /// <summary>
     /// Lerp the camera to the specified transform

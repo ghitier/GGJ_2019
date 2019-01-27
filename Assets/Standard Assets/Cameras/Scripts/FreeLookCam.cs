@@ -72,9 +72,19 @@ namespace UnityStandardAssets.Cameras
 			if(Time.timeScale < float.Epsilon)
 			return;
 
-            // Read the user input
-            var x = CrossPlatformInputManager.GetAxis("Mouse X");
-            var y = CrossPlatformInputManager.GetAxis("Mouse Y");
+            float x, y;
+            if (Input.GetJoystickNames()[0] == "Controller (XBOX 360 For Windows)")
+            {
+                m_TurnSpeed = 10;
+                x = CrossPlatformInputManager.GetAxis("JoystikX");
+                y = -CrossPlatformInputManager.GetAxis("JoystikY");
+            }
+            else
+            {
+                x = CrossPlatformInputManager.GetAxis("Mouse X");
+                y = CrossPlatformInputManager.GetAxis("Mouse Y");
+            }
+            
 
             // Adjust the look angle by an amount proportional to the turn speed and horizontal input.
             m_LookAngle += x*m_TurnSpeed;

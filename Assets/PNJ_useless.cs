@@ -18,7 +18,7 @@ public class PNJ_useless : MonoBehaviour
         
        // if (DistanceToDestroyPLace < 2)
        // {
-        //    Destroy(gameObject);
+        //    Destroy(gameObject );
       //  }
     }
     private void OnDestroy()

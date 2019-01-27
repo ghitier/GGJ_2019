@@ -66,7 +66,7 @@ public class Orb : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.CompareTag("Ground"))
+        if (!collision.gameObject.CompareTag("Player"))
         {
             isGrounded = true;
             AudioSource sfxAudioSource = GetComponent<AudioSource>();
@@ -76,7 +76,7 @@ public class Orb : MonoBehaviour
 
     private void OnCollisionStay(Collision collision)
     {
-        if (collision.gameObject.CompareTag("Ground"))
+        if (!collision.gameObject.CompareTag("Player"))
         {
             Rigidbody rb = GetComponent<Rigidbody>();
             float t = (2 * Mathf.PI) / rb.angularVelocity.magnitude;
@@ -93,7 +93,7 @@ public class Orb : MonoBehaviour
 
     private void OnCollisionExit(Collision collision)
     {
-        if (collision.gameObject.CompareTag("Ground"))
+        if (!collision.gameObject.CompareTag("Player"))
         {
             isGrounded = false;
             isRolling = false;
