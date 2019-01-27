@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.UI;
 using UnityStandardAssets.Characters.ThirdPerson;
 
@@ -16,6 +17,11 @@ public class GameManager : MonoBehaviour
     public Canvas GameUI; // le menu pause, ni plus ni moins.
     public Canvas InputField; //Pour l'ajout de nouvelle phrases dans la bouboule
     public GameObject player;
+
+    [SerializeField]
+    public GameObject PNJ_runner;
+    public GameObject PNJ_runner_Prefab;
+    private Vector3 PNJ_runner_initPos;
     public float interactDistance;
 
     public float transitionDurationBetweenCamera; 
@@ -49,6 +55,7 @@ public class GameManager : MonoBehaviour
         switchCamPosition();
         GameUI.enabled = false;
         InputField.enabled = false;
+        PNJ_runner_initPos = PNJ_runner.transform.position;
     }
     
     private void Update()
@@ -229,6 +236,15 @@ public class GameManager : MonoBehaviour
         //give back the velocity the ball had before Pause()
         Ball.GetComponent<Rigidbody>().velocity = ballVelocity;
         Ball.GetComponent<Rigidbody>().angularVelocity = ballAngularVelocity;
+    }
+
+    public void resPawnPnj()
+    {
+        GameObject newPnj = Instantiate(PNJ_runner);
+        newPnj.transform.position = PNJ_runner_initPos;
+        newPnj.GetComponent<NavMeshAgent>().enabled = true;
+        PNJ_runner = newPnj;
+
     }
 
     /// <summary>
