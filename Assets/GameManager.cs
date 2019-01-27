@@ -28,7 +28,7 @@ public class GameManager : MonoBehaviour
     int camPos = 0;
 
     //some Texts positionned in the spherical ball canvas to display quotes
-    public List<Text> ballData;
+    public List<string> ballData;
 
     public ThirdPersonUserControl userControl;
     bool gameRun = true;
@@ -54,6 +54,9 @@ public class GameManager : MonoBehaviour
 
     void Awake()
     {
+
+        ballData = new List<string>();
+        loadBallData();
         //Check if instance already exists
         if (instance == null)
             instance = this;
@@ -65,7 +68,7 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        loadBallData();
+        
         switchCamPosition();
         GameUI.enabled = false;
         InputField.enabled = false;
@@ -180,12 +183,9 @@ public class GameManager : MonoBehaviour
 
         string[] lines = File.ReadAllLines("Legacy.txt");
 
-        if (lines.Length >= ballData.Count)
+        for (int i = 0 ; i < lines.Length; i++)
         {
-            for (int i = 0; i < ballData.Count; i++)
-            {
-                ballData[i].text = lines[i];
-            }
+            ballData.Add(lines[i]);
         }
     }
 
