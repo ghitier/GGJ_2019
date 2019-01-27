@@ -4,35 +4,31 @@ using UnityEngine;
 using UnityEngine.Audio;
 using UnityStandardAssets.Characters.ThirdPerson;
 
+// UNUSED
+
 public class CharacterFootsteps : MonoBehaviour
 {
-    [SerializeField] private AudioClip footStepClip;
-    [SerializeField] private AudioMixerGroup mixerGroup;
-    ThirdPersonCharacter thirdPersonRef;
-    AudioSource sourceRef;
+    private ThirdPersonCharacter uc;
+    [SerializeField] private AudioClip[] foostepSoundsWithOrb = { };
+    [SerializeField] private AudioClip[] foostepSoundsWithoutOrb = { };
 
     // Start is called before the first frame update
     void Start()
     {
-        thirdPersonRef = GetComponent<ThirdPersonCharacter>();
-        sourceRef = GetComponent<AudioSource>();
-        // sourceRef = gameObject.AddComponent<AudioSource>();
-        // sourceRef.playOnAwake = false;
-        sourceRef.clip = footStepClip;
-        sourceRef.enabled = true;
-        // sourceRef.outputAudioMixerGroup = mixerGroup;
-        // sourceRef.loop = true;
+        uc = GameManager.instance.player.GetComponent<ThirdPersonCharacter>();
+        GameManager.takeBallDelegate += SetFootstepsWithBall;
+        GameManager.dropBallDelegate += SetFootstepsWithoutBall;
+        SetFootstepsWithBall();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void SetFootstepsWithBall()
     {
-        if (!sourceRef.isPlaying && thirdPersonRef.IsGrounded)
-        {
-            sourceRef.Play();
-        } else if (sourceRef.isPlaying && !thirdPersonRef.IsGrounded)
-        {
-            sourceRef.Stop();
-        }
+        uc.m_FootstepSounds = foostepSoundsWithOrb;
     }
+
+    private void SetFootstepsWithoutBall()
+    {
+        uc.m_FootstepSounds = foostepSoundsWithoutOrb;
+    }
+
 }

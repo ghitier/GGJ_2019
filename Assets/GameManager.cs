@@ -38,6 +38,20 @@ public class GameManager : MonoBehaviour
     private Vector3 ballVelocity;
     private Vector3 ballAngularVelocity;
 
+
+    // GENERATE Event : 
+    public delegate void OnDropBallDelegate();
+    public static OnDropBallDelegate dropBallDelegate;
+
+    public delegate void OnTakeBallDelegate();
+    public static OnTakeBallDelegate takeBallDelegate;
+
+    public delegate void OnPauseDelegate();
+    public static OnPauseDelegate pauseDelegate;
+
+    public delegate void OnResumeDelegate();
+    public static OnResumeDelegate resumeDelegate;
+
     void Awake()
     {
         //Check if instance already exists
@@ -60,7 +74,7 @@ public class GameManager : MonoBehaviour
     
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Q)) // switch camera view (Drop the ball)
+        if (Input.GetKeyDown(KeyCode.E)) // switch camera view (Drop the ball)
         {
             if (hasBall)
             {
@@ -130,9 +144,16 @@ public class GameManager : MonoBehaviour
         if (Vector3.Distance(Ball.transform.position, player.transform.position) < interactDistance)
         {
             Ball.transform.parent = player.transform;
+            Ball.transform.localPosition = new Vector3(0, 1, 0.5f);
+
+            Ball.GetComponent<Collider>().isTrigger = true;
             Ball.GetComponent<Rigidbody>().isKinematic = true;
+
             hasBall = true;
+
             switchCamPosition(); // switch to 3rd person view
+            
+            takeBallDelegate(); // trigger event
         }
     }
 
@@ -143,8 +164,11 @@ public class GameManager : MonoBehaviour
     {
         Ball.transform.parent = transform.parent;
         hasBall = false;
+        Ball.GetComponent<Collider>().isTrigger = false;
         Ball.GetComponent<Rigidbody>().isKinematic = false;
         switchCamPosition();// switch to 1st person view
+
+        dropBallDelegate(); // trigger Event
     }
    
     /// <summary>
@@ -207,6 +231,8 @@ public class GameManager : MonoBehaviour
         //Stop the ball
         Ball.GetComponent<Rigidbody>().velocity = Vector3.zero;
         Ball.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
+
+        pauseDelegate();
     }
 
     /// <summary>
@@ -236,6 +262,8 @@ public class GameManager : MonoBehaviour
         //give back the velocity the ball had before Pause()
         Ball.GetComponent<Rigidbody>().velocity = ballVelocity;
         Ball.GetComponent<Rigidbody>().angularVelocity = ballAngularVelocity;
+
+        resumeDelegate();
     }
 
     public void resPawnPnj()

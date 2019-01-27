@@ -118,6 +118,7 @@ public class PNJrunner : MonoBehaviour
         agent.enabled = false;
         isGonnaDie = true;
         Debug.Log("Should jump to die");
+        GetComponent<Rigidbody>().isKinematic = false;
         StartCoroutine(Transition(spotAuDessusDuVide));
     }
     /// <summary>
