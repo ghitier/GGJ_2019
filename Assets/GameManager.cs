@@ -6,6 +6,8 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
 using UnityStandardAssets.Characters.ThirdPerson;
+using UnityStandardAssets.Cameras;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -17,12 +19,16 @@ public class GameManager : MonoBehaviour
     public Canvas GameUI; // le menu pause, ni plus ni moins.
     public Canvas InputField; //Pour l'ajout de nouvelle phrases dans la bouboule
     public GameObject player;
+    public GameObject camera;
 
     [SerializeField]
     public GameObject PNJ_runner;
     public GameObject PNJ_runner_Prefab;
     private Vector3 PNJ_runner_initPos;
     public float interactDistance;
+
+    private float timeDroppedOrb; // timestamp at which the orbe was dropped
+    [SerializeField] private float allowedTimeAwayFromOrbe;
 
     public float transitionDurationBetweenCamera; 
     int camPos = 0;
@@ -37,6 +43,9 @@ public class GameManager : MonoBehaviour
     // Those are used to store the ball movement (To be able to stop the ball at Pause() and give it back when UnPause() ): 
     private Vector3 ballVelocity;
     private Vector3 ballAngularVelocity;
+
+    public Room1Manager room1Manager;
+    public Room2Manager room2Manager;
 
 
     // GENERATE Event : 
@@ -68,7 +77,9 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        
+        room1Manager = GetComponent<Room1Manager>();
+        room2Manager = GetComponent<Room2Manager>();
+        loadBallData();
         switchCamPosition();
         GameUI.enabled = false;
         InputField.enabled = false;
@@ -77,7 +88,7 @@ public class GameManager : MonoBehaviour
     
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.E)) // switch camera view (Drop the ball)
+        if (Input.GetKeyDown(KeyCode.E) || Input.GetButton("Submit")) // switch camera view (Drop the ball)
         {
             if (hasBall)
             {
@@ -124,7 +135,7 @@ public class GameManager : MonoBehaviour
     /// <summary>
     /// Lerp the camera to the specified transform
     /// </summary>
-    IEnumerator Transition(Transform target)
+    public IEnumerator Transition(Transform target)
     {
         Camera.main.transform.parent = target.transform;
         float t = 0.0f;
@@ -155,8 +166,9 @@ public class GameManager : MonoBehaviour
             hasBall = true;
 
             switchCamPosition(); // switch to 3rd person view
-            
-            takeBallDelegate(); // trigger event
+
+            if (takeBallDelegate != null)
+                takeBallDelegate(); // trigger event
         }
     }
 
@@ -169,11 +181,18 @@ public class GameManager : MonoBehaviour
         hasBall = false;
         Ball.GetComponent<Collider>().isTrigger = false;
         Ball.GetComponent<Rigidbody>().isKinematic = false;
+        timeDroppedOrb = Time.time;
         switchCamPosition();// switch to 1st person view
 
-        dropBallDelegate(); // trigger Event
+        if (dropBallDelegate != null)
+            dropBallDelegate(); // trigger Event
     }
-   
+
+    public void EjectBall()
+    {
+        dropBall();
+    }
+
     /// <summary>
     /// THis load data from txt file to display in the ball
     /// </summary>
@@ -199,6 +218,7 @@ public class GameManager : MonoBehaviour
             file.WriteLine(s);
             InputField.enabled = false;
         }
+        SceneManager.LoadScene("MainLevel");//Restart game
     }
 
     public void DisplayInputField()
@@ -232,7 +252,8 @@ public class GameManager : MonoBehaviour
         Ball.GetComponent<Rigidbody>().velocity = Vector3.zero;
         Ball.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
 
-        pauseDelegate();
+        if (pauseDelegate != null)
+            pauseDelegate();
     }
 
     /// <summary>
@@ -263,7 +284,8 @@ public class GameManager : MonoBehaviour
         Ball.GetComponent<Rigidbody>().velocity = ballVelocity;
         Ball.GetComponent<Rigidbody>().angularVelocity = ballAngularVelocity;
 
-        resumeDelegate();
+        if (resumeDelegate != null)
+            resumeDelegate();
     }
 
     public void resPawnPnj()
@@ -273,6 +295,31 @@ public class GameManager : MonoBehaviour
         newPnj.GetComponent<NavMeshAgent>().enabled = true;
         PNJ_runner = newPnj;
 
+    }
+
+    public void SpawnPlayer(Vector3 position, Quaternion rotation)
+    {
+        player = Instantiate(player, position, rotation);
+        camera.GetComponent<FreeLookCam>().SetTarget(player.transform);
+    }
+
+    public void SpawnOrb(Vector3 position, Quaternion rotation)
+    {
+        Ball = Instantiate(Ball, position, rotation);
+    }
+
+    public void SpawnOrbToPlayer()
+    {
+        Ball = Instantiate(Ball, player.transform.position, player.transform.rotation);
+        takeBall();
+    }
+
+    public float PercentageLost()
+    {
+        if (hasBall)
+            return 0f;
+        float t = Time.time - timeDroppedOrb;
+        return Mathf.Clamp(t / allowedTimeAwayFromOrbe, 0f, 1f);
     }
 
     /// <summary>

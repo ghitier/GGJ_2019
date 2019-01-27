@@ -23,6 +23,7 @@ public class PNJ_useless_Manager : MonoBehaviour
         GameObject newPnj = Instantiate(PNJ_useless,transform);
         newPnj.transform.position = spawnPlace.position;
         //newPnj.GetComponent<PNJ_useless>().destroyPlace = destroyPlace;
+        newPnj.GetComponent<NavMeshAgent>().enabled = true;
         newPnj.GetComponent<NavMeshAgent>().SetDestination(transform.position);
         pnjs.Add(newPnj);
     }
