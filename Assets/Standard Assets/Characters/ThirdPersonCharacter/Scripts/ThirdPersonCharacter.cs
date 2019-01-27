@@ -236,7 +236,6 @@ namespace UnityStandardAssets.Characters.ThirdPerson
             int n = Random.Range(1, m_FootstepSounds.Length);
             m_AudioSource.clip = m_FootstepSounds[n];
 
-            Debug.Log($"Sould have playerd {m_AudioSource.clip.name}");
             m_AudioSource.PlayOneShot(m_AudioSource.clip);
 
             // move picked sound to index 0 so it's not picked next time
